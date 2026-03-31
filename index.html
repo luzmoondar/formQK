@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FORM - Next-Gen Form Design</title>
+    <meta name="description"
+        content="A premium experience for modern form design and management. Experience the future today.">
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="style.css">
+
+    <!-- PDF Generation Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+</head>
+
+<body>
+    <!-- Background Mesh -->
+    <div class="bg-mesh"></div>
+
+    <!-- Main Form Container -->
+    <main class="form-page-container">
+        <div class="container">
+            <header class="form-header">
+                <div class="logo">FORM.</div>
+                <h1>퀀텀 코리아 2026 디렉토리북</h1>
+                <p>작성하신 내용은 PDF로 변환되어 담당자에게 즉시 전송됩니다.</p>
+            </header>
+
+            <div class="form-document-card" id="intro-document">
+                <div class="document-header">
+                    <h2>참가 업체 정보 및 소개서<br>(Exhibitor Information)</h2>
+                    <div class="doc-meta">날짜 (Date): <span id="current-date"></span></div>
+                </div>
+
+                <form id="vendor-form" class="vendor-grid-form">
+                    <!-- Section 1: Company Information -->
+                    <div class="form-section">
+                        <h4 class="section-title">01. 업체 정보 (Company Information)</h4>
+                        <div class="grid-2">
+                            <div class="input-group">
+                                <label>업체명 (국문) / Company Name (KOR)</label>
+                                <input type="text" name="company_name_kor" placeholder="상호명을 입력하세요">
+                            </div>
+                            <div class="input-group">
+                                <label>업체명 (영문) / Company Name (ENG)</label>
+                                <input type="text" name="company_name_eng" placeholder="Enter company name in English">
+                            </div>
+                            <div class="input-group full">
+                                <label>주소 (국문) / Address (KOR)</label>
+                                <input type="text" name="address_kor" placeholder="사업장 소재지를 입력하세요">
+                            </div>
+                            <div class="input-group full">
+                                <label>주소 (영문) / Address (ENG)</label>
+                                <input type="text" name="address_eng" placeholder="Enter business address in English">
+                            </div>
+                            <div class="input-group full">
+                                <label>홈페이지 / Website</label>
+                                <input type="url" name="website" placeholder="https://www.example.com">
+                            </div>
+                            <div class="input-group">
+                                <label>로고 업로드 (Logo) - Max 1</label>
+                                <div class="mini-upload-area">
+                                    <label class="mini-file-label">
+                                        <i data-lucide="upload"></i> 파일 선택
+                                        <input type="file" id="logo-input" accept=".jpg,.jpeg,.png,.ai,.pdf,.svg,.eps">
+                                    </label>
+                                    <div id="logo-preview-box" class="mini-preview-box">
+                                        <span class="placeholder-text">Logo</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="input-group">
+                                <label>QR 코드 업로드 (QR Code) - Max 1</label>
+                                <div class="mini-upload-area">
+                                    <label class="mini-file-label">
+                                        <i data-lucide="upload"></i> 파일 선택
+                                        <input type="file" id="qr-input" accept=".jpg,.jpeg,.png,.ai,.pdf,.svg,.eps">
+                                    </label>
+                                    <div id="qr-preview-box" class="mini-preview-box">
+                                        <span class="placeholder-text">QR</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Section 2: Contact Information -->
+                    <div class="form-section">
+                        <h4 class="section-title">02. 담당자 정보 (Contact Person)</h4>
+                        <div class="grid-2">
+                            <div class="input-group">
+                                <label>담당자명 / Name (KOR)</label>
+                                <input type="text" name="contact_name_kor" placeholder="홍길동">
+                            </div>
+                            <div class="input-group">
+                                <label>담당자명 / Name (ENG)</label>
+                                <input type="text" name="contact_name_eng" placeholder="Hong Gil Dong">
+                            </div>
+                            <div class="input-group">
+                                <label>직함 / Contact (KOR)</label>
+                                <input type="text" name="title_kor" placeholder="팀장">
+                            </div>
+                            <div class="input-group">
+                                <label>직함 / Contact (ENG)</label>
+                                <input type="text" name="title_eng" placeholder="Team Leader">
+                            </div>
+                            <div class="input-group">
+                                <label>전화번호 / Tel</label>
+                                <input type="tel" name="tel" placeholder="02-000-0000">
+                            </div>
+                            <div class="input-group">
+                                <label>팩스 / Fax</label>
+                                <input type="tel" name="fax" placeholder="02-000-0000">
+                            </div>
+                            <div class="input-group">
+                                <label>핸드폰 / Mobile</label>
+                                <input type="tel" name="mobile" placeholder="010-0000-0000">
+                            </div>
+                            <div class="input-group">
+                                <label>이메일 / E-mail</label>
+                                <input type="email" name="email" placeholder="example@company.com">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Section 3: Detailed Description -->
+                    <div class="form-section">
+                        <h4 class="section-title">03. 상세 소개 (Detailed Description)</h4>
+
+                        <div class="lang-group">
+                            <div class="input-group full">
+                                <label>기업소개 / Company Intro (KOR)</label>
+                                <textarea name="intro_kor" rows="3" placeholder="국문 기업 소개를 입력하세요"></textarea>
+                            </div>
+                            <div class="input-group full">
+                                <label>기업소개 / Company Intro (ENG)</label>
+                                <textarea name="intro_eng" rows="3"
+                                    placeholder="Enter company introduction in English"></textarea>
+                            </div>
+                        </div>
+
+                        <div class="lang-group">
+                            <div class="input-group full">
+                                <label>전시분야 / Exhibition Fields (KOR)</label>
+                                <input type="text" name="fields_kor" placeholder="주요 전시 품목 및 분야를 입력하세요">
+                            </div>
+                            <div class="input-group full">
+                                <label>전시분야 / Exhibition Fields (ENG)</label>
+                                <input type="text" name="fields_eng" placeholder="Enter exhibition fields in English">
+                            </div>
+                        </div>
+
+                        <div class="lang-group">
+                            <div class="input-group full">
+                                <label>대표제품 / Main Products (KOR)</label>
+                                <textarea name="products_kor" rows="2" placeholder="주요 제품 리스트를 입력하세요"></textarea>
+                            </div>
+                            <div class="input-group full">
+                                <label>대표제품 / Main Products (ENG)</label>
+                                <textarea name="products_eng" rows="2"
+                                    placeholder="Enter main products list in English"></textarea>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Section 4: Representative Photo -->
+                    <div class="form-section no-print-input">
+                        <h4 class="section-title">04. 대표 사진 (Representative Photo)</h4>
+                        <div class="photo-upload-area">
+                            <div class="upload-controls">
+                                <label class="file-label">
+                                    <i data-lucide="image-plus"></i> 사진 업로드 (최대 5장)
+                                    <input type="file" id="photo-input" accept="image/*" multiple>
+                                </label>
+                                <p class="help-text">최대 5장까지 등록 가능합니다. (Limit: Max 5 photos, JPG/PNG only)</p>
+                            </div>
+                            <div id="photo-preview-box" class="photo-preview-grid">
+                                <div id="preview-placeholder">사진을 업로드하면 이곳에 표시됩니다. (최대 5장)</div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            </form>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="form-actions-sticky">
+            <button type="button" class="btn-secondary" id="preview-btn">미리보기</button>
+            <button type="submit" form="vendor-form" class="btn-primary" id="save-send-btn">
+                <span class="btn-text">저장 및 PDF 전송</span>
+                <span class="btn-loading" style="display: none;">처리 중...</span>
+            </button>
+        </div>
+        </div>
+    </main>
+
+    <!-- Success Overlay (Modal) -->
+    <div id="success-overlay" class="success-overlay">
+        <div class="overlay-content">
+            <div class="icon-circle">✨</div>
+            <h2>전송이 완료되었습니다!</h2>
+            <p>업체 소개서가 PDF로 변환되어 담당자 이메일로 전송되었습니다.</p>
+            <button class="btn-primary" onclick="location.reload()">확인</button>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <p>&copy; 2026 FORM Studio. All rights reserved.</p>
+            <div style="margin-top: 1rem; display: flex; gap: 1.5rem; justify-content: center;">
+                <a href="#" style="color: var(--color-text-muted); text-decoration:none;">Twitter</a>
+                <a href="#" style="color: var(--color-text-muted); text-decoration:none;">Dribbble</a>
+                <a href="#" style="color: var(--color-text-muted); text-decoration:none;">LinkedIn</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JS -->
+    <script src="main.js"></script>
+    <script>
+        // Initialize Lucide Icons
+        lucide.createIcons();
+    </script>
+</body>
+
+</html>
