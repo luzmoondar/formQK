@@ -6,7 +6,7 @@ document.addEventListener('DOMContentLoaded', () => {
         dateEl.textContent = `${now.getFullYear()}. ${String(now.getMonth() + 1).padStart(2, '0')}. ${String(now.getDate()).padStart(2, '0')}`;
     }
 
-    // 2. Photo Upload & Preview Logic (Restored)
+    // 2. Photo Upload & Preview Logic
     const photoInput = document.getElementById('photo-input');
     const previewGrid = document.getElementById('photo-preview-box');
     const previewPlaceholder = document.getElementById('preview-placeholder');
@@ -33,14 +33,13 @@ document.addEventListener('DOMContentLoaded', () => {
                     const removeBtn = document.createElement('button');
                     removeBtn.className = 'remove-photo-btn';
                     removeBtn.innerHTML = '&times;';
-                    removeBtn.type = 'button';
+                    wrap.appendChild(removeBtn);
                     removeBtn.onclick = (e) => {
                         e.stopPropagation();
                         allSelectedFiles.splice(index, 1);
                         updateInputFiles();
                         renderPreviews();
                     };
-                    wrap.appendChild(removeBtn);
                     previewGrid.appendChild(wrap);
                 };
                 reader.readAsDataURL(file);
@@ -55,15 +54,9 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     if (photoInput) {
-        photoInput.addEventListener('change', function(e) {
-            const newFiles = Array.from(e.target.files);
-            const combined = [...allSelectedFiles, ...newFiles];
-            if (combined.length > 5) {
-                alert('최대 5장까지만 업로드 가능합니다.');
-                allSelectedFiles = combined.slice(0, 5);
-            } else {
-                allSelectedFiles = combined;
-            }
+        photoInput.addEventListener('change', (e) => {
+            const combined = [...allSelectedFiles, ...Array.from(e.target.files)];
+            allSelectedFiles = combined.slice(0, 5);
             updateInputFiles();
             renderPreviews();
         });
@@ -74,26 +67,17 @@ document.addEventListener('DOMContentLoaded', () => {
         const input = document.getElementById(inputSelector);
         const box = document.getElementById(previewBoxId);
         if (!input || !box) return;
-        input.addEventListener('change', function(e) {
+        input.addEventListener('change', (e) => {
             const file = e.target.files[0];
-            if (!file) return;
+            if (!file || !file.type.startsWith('image/')) return;
             box.innerHTML = '';
-            if (file.type.startsWith('image/')) {
-                const reader = new FileReader();
-                reader.onload = function(event) {
-                    const img = document.createElement('img');
-                    img.src = event.target.result;
-                    box.appendChild(img);
-                };
-                reader.readAsDataURL(file);
-            } else {
-                const ext = file.name.split('.').pop().toUpperCase();
-                const span = document.createElement('span');
-                span.textContent = ext;
-                span.style.color = '#3b82f6';
-                span.style.fontWeight = '900';
-                box.appendChild(span);
-            }
+            const reader = new FileReader();
+            reader.onload = (ev) => {
+                const img = document.createElement('img');
+                img.src = ev.target.result;
+                box.appendChild(img);
+            };
+            reader.readAsDataURL(file);
         });
     }
     handleMiniPreview('logo-input', 'logo-preview-box');
@@ -101,7 +85,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (window.lucide) lucide.createIcons();
 
-    // 4. Character Counter & Auto-Expand
+    // 4. Character Counter & Mirror (Auto-Expand)
     const textareas = document.querySelectorAll('#vendor-form textarea[maxlength]');
     textareas.forEach(textarea => {
         const mirrorId = `mirror-${textarea.name}`;
@@ -112,19 +96,14 @@ document.addEventListener('DOMContentLoaded', () => {
             if (mirrorEl) mirrorEl.textContent = textarea.value;
         };
         textarea.addEventListener('input', () => {
-            const currentLength = textarea.value.length;
-            const maxLength = textarea.getAttribute('maxlength');
-            const counterElement = document.getElementById(`count-${textarea.name}`);
-            if (counterElement) {
-                counterElement.textContent = `${currentLength.toLocaleString()} / ${parseInt(maxLength).toLocaleString()}`;
-                counterElement.style.color = currentLength >= maxLength * 0.9 ? '#e53e3e' : '#94a3b8';
-            }
+            const countEl = document.getElementById(`count-${textarea.name}`);
+            if (countEl) countEl.textContent = `${textarea.value.length.toLocaleString()} / ${textarea.getAttribute('maxlength').toLocaleString()}`;
             autoExpand();
         });
         autoExpand();
     });
 
-    // 5. Final ZIP Submission (PDF + Original Media)
+    // 5. Final HTML ZIP Submission
     const form = document.getElementById('vendor-form');
     const saveSendBtn = document.getElementById('save-send-btn');
     const docCard = document.getElementById('intro-document');
@@ -133,14 +112,9 @@ document.addEventListener('DOMContentLoaded', () => {
     if (saveSendBtn) {
         saveSendBtn.addEventListener('click', async (e) => {
             e.preventDefault();
-
-            // Validation: Company Name
             const formData = new FormData(form);
             const companyName = (formData.get('company_name_kor') || formData.get('company_name_eng') || '').trim();
-            if (!companyName) {
-                alert('저장을 위해 업체명(국문 또는 영문)을 반드시 입력해 주세요.');
-                return;
-            }
+            if (!companyName) return alert('업체명을 입력해 주세요.');
 
             const btnText = saveSendBtn.querySelector('.btn-text');
             const btnLoading = saveSendBtn.querySelector('.btn-loading');
@@ -151,57 +125,78 @@ document.addEventListener('DOMContentLoaded', () => {
             const safeName = companyName.replace(/[/\\?%*:|"<>]/g, '-');
 
             try {
-                // A. Generate High-Quality PDF (Image-based for Zip storage)
-                const opt = {
-                    margin: 10,
-                    filename: `${safeName}.pdf`,
-                    image: { type: 'jpeg', quality: 0.98 },
-                    html2canvas: { scale: 2, useCORS: true, logging: false },
-                    jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
-                };
-                const pdfBlob = await html2pdf().from(docCard).set(opt).output('blob');
+                // A. Generate High-Fidelity HTML Archive
+                const clone = docCard.cloneNode(true);
+                
+                // Clean UI noise for static archive
+                clone.querySelectorAll('.no-print-input, .remove-photo-btn, .file-label, .mini-file-label, .char-counter-wrap, .btn-primary, .btn-secondary').forEach(el => el.remove());
+                
+                // Map Image paths to ZIP folders inside the HTML
+                const logoImg = clone.querySelector('#logo-preview-box img');
+                const qrImg = clone.querySelector('#qr-preview-box img');
+                const photoImgs = clone.querySelectorAll('#photo-preview-box img');
+
+                const logoFile = document.getElementById('logo-input').files[0];
+                const qrFile = document.getElementById('qr-input').files[0];
+
+                if (logoImg && logoFile) logoImg.src = `Branding_Assets/Logo.${logoFile.name.split('.').pop()}`;
+                if (qrImg && qrFile) qrImg.src = `Branding_Assets/QR.${qrFile.name.split('.').pop()}`;
+                photoImgs.forEach((img, i) => { if (allSelectedFiles[i]) img.src = `img/Photo_${i+1}.${allSelectedFiles[i].name.split('.').pop()}`; });
+
+                // Inline all active styles
+                const cssText = Array.from(document.styleSheets)
+                    .filter(sheet => !sheet.href || sheet.href.includes(window.location.hostname))
+                    .map(sheet => {
+                        try { return Array.from(sheet.cssRules).map(r => r.cssText).join('\n'); }
+                        catch(e) { return ''; }
+                    }).join('\n');
+
+                const archiveHtml = `
+                <!DOCTYPE html>
+                <html lang="ko">
+                <head>
+                    <meta charset="UTF-8"><title>${companyName} - Directory</title>
+                    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
+                    <style>
+                        body { background: #f0f2f5; margin: 0; padding: 40px; font-family: 'Inter', sans-serif; }
+                        ${cssText}
+                        .form-document-card { margin: 0 auto; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); width: 100%; max-width: 900px; border: 1px solid #e2e8f0; }
+                        input, textarea { border: none !important; background: transparent !important; pointer-events: none; }
+                        .preview-img-wrap { border: none !important; box-shadow: none !important; }
+                    </style>
+                </head>
+                <body><div class="container">${clone.outerHTML}</div></body>
+                </html>`;
 
                 // B. Create ZIP Package
                 const zip = new JSZip();
                 const root = zip.folder(`${safeName}_Package`);
+                root.file(`${safeName}_Archive.html`, archiveHtml);
                 
-                root.file(`${safeName}_Information.pdf`, pdfBlob);
-                root.file("README_INFO.txt", `Exhibitor: ${companyName}\nDate: ${new Date().toLocaleString()}\n\nNote: All original assets included in subfolders.`);
-
-                // Add Original Photos
                 if (allSelectedFiles.length > 0) {
                     const imgFolder = root.folder("img");
-                    allSelectedFiles.forEach((file, index) => {
-                        const ext = file.name.split('.').pop();
-                        imgFolder.file(`Photo_${index + 1}.${ext}`, file);
-                    });
+                    allSelectedFiles.forEach((f, i) => imgFolder.file(`Photo_${i+1}.${f.name.split('.').pop()}`, f));
                 }
-
-                // Add Original Logo/QR
                 const brandingFolder = root.folder("Branding_Assets");
-                const logoFile = document.getElementById('logo-input').files[0];
-                const qrFile = document.getElementById('qr-input').files[0];
-                if (logoFile) brandingFolder.file(`Original_Logo.${logoFile.name.split('.').pop()}`, logoFile);
-                if (qrFile) brandingFolder.file(`Original_QR.${qrFile.name.split('.').pop()}`, qrFile);
+                if (logoFile) brandingFolder.file(`Logo.${logoFile.name.split('.').pop()}`, logoFile);
+                if (qrFile) brandingFolder.file(`QR.${qrFile.name.split('.').pop()}`, qrFile);
 
                 // C. Final Download
-                const zipContent = await zip.generateAsync({ type: "blob" });
+                const content = await zip.generateAsync({ type: "blob" });
                 const link = document.createElement('a');
-                link.href = URL.createObjectURL(zipContent);
+                link.href = URL.createObjectURL(content);
                 link.download = `${safeName}_Package.zip`;
                 link.click();
 
-                // Success Modal
                 setTimeout(() => {
                     if (successOverlay) successOverlay.style.display = 'flex';
                     saveSendBtn.disabled = false;
                     if (btnText) btnText.style.display = 'inline';
                     if (btnLoading) btnLoading.style.display = 'none';
                 }, 1000);
-
-            } catch (error) {
-                console.error('Packaging Error:', error);
-                alert('파일 압축 중 오류가 발생했습니다.');
+            } catch (err) {
+                console.error(err);
+                alert('저장 중 오류가 발생했습니다.');
                 saveSendBtn.disabled = false;
                 if (btnText) btnText.style.display = 'inline';
                 if (btnLoading) btnLoading.style.display = 'none';
