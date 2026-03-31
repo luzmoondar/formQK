@@ -27,6 +27,7 @@
     <!-- Libraries -->
     <script src="https://unpkg.com/lucide@latest"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 </head>
 
 <body>
@@ -73,7 +74,7 @@
                                 <label>홈페이지 / Website</label>
                                 <input type="url" name="website" placeholder="https://www.example.com">
                             </div>
-                            <div class="input-group hidden-area">
+                            <div class="input-group">
                                 <label>로고 업로드 (Logo) - Max 1</label>
                                 <div class="mini-upload-area">
                                     <label class="mini-file-label"><i data-lucide="upload"></i>파일 선택<input type="file"
@@ -83,7 +84,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="input-group hidden-area">
+                            <div class="input-group">
                                 <label>QR 코드 업로드 (QR Code) - Max 1</label>
                                 <div class="mini-upload-area">
                                     <label class="mini-file-label"><i data-lucide="upload"></i>파일 선택<input type="file"
@@ -189,8 +190,8 @@
                         </div>
                     </div>
 
-                    <!-- Section 4: Representative Photo (Hidden) -->
-                    <div class="form-section hidden-area">
+                    <!-- Section 4: Representative Photo -->
+                    <div class="form-section no-print-input">
                         <h4 class="section-title">04. 대표 사진 (Representative Photo)</h4>
                         <div class="photo-upload-area">
                             <div class="upload-controls">
@@ -224,7 +225,7 @@
         <div class="overlay-content">
             <div class="icon-circle">📦</div>
             <h2>저장이 완료되었습니다!</h2>
-            <p style="margin: 1rem 0 1.5rem 0; line-height: 1.6;">PDF 서류가 성공적으로 생성되었습니다.</p>
+            <p style="margin: 1rem 0 1.5rem 0; line-height: 1.6;">작성하신 데이터(PDF)와 고화질 원본 사진 파일이<br>포함된 ZIP 패키지가 다운로드되었습니다.</p>
             <button class="btn-primary" onclick="location.reload()">새로 작성</button>
         </div>
     </div>
