@@ -9,23 +9,24 @@
 
     <!-- Open Graph (Link Preview) -->
     <meta property="og:type" content="website">
-    <meta property="og:title" content="퀀텀 코리아 2026 디렉토리북 작성 양식">
-    <meta property="og:description" content="참가업체 상세정보 및 디렉토리북 작성을 위한 온라인 제출 시스템 (PDF 자동변환)">
+    <meta property="og:title" content="퀀텀 코리아 2026 디렉토리북 작성">
+    <meta property="og:description" content="참가업체 상세정보 및 디렉토리북 작성을 위한 온라인 제출 시스템">
     <meta property="og:image" content="https://luzmoondar.github.io/formQK/qk.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
     <meta property="og:url" content="https://luzmoondar.github.io/formQK/">
 
-    <!-- kakao Card -->
-    <meta name="kakao:card" content="summary_large_image">
-    <meta name="kakao:title" content="퀀텀 코리아 2026 디렉토리북 작성 양식">
-    <meta name="kakao:description" content="참가업체 상세정보 및 디렉토리북 작성을 위한 온라인 제출 시스템">
-    <meta name="kakao:image" content="https://luzmoondar.github.io/formQK/qk.png">
+    <!-- Kakao Specific Meta Tags -->
+    <meta property="kakao:title" content="퀀텀 코리아 2026 디렉토리북 작성">
+    <meta property="kakao:description" content="참가업체 상세정보 제출 시스템">
+    <meta property="kakao:image" content="https://luzmoondar.github.io/formQK/qk.png">
 
     <!-- CSS -->
     <link rel="stylesheet" href="style.css">
 
-    <!-- PDF & ZIP Libraries -->
+    <!-- Libraries -->
+    <script src="https://unpkg.com/lucide@latest"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 </head>
 
 <body>
@@ -38,7 +39,7 @@
             <header class="form-header">
                 <div class="logo">FORM.</div>
                 <div class="logo-subtitle">퀀텀 코리아 2026 디렉토리북</div>
-                <p>작성하신 내용은 PDF 및 원본 이미지 파일이 포함된 ZIP 패키지로 저장됩니다.</p>
+                <p>작성하신 내용은 텍스트 검색 및 복사가 가능한 고화질 PDF로 저장됩니다.</p>
             </header>
 
             <div class="form-document-card" id="intro-document">
@@ -72,7 +73,7 @@
                                 <label>홈페이지 / Website</label>
                                 <input type="url" name="website" placeholder="https://www.example.com">
                             </div>
-                            <div class="input-group">
+                            <div class="input-group hidden-area">
                                 <label>로고 업로드 (Logo) - Max 1</label>
                                 <div class="mini-upload-area">
                                     <label class="mini-file-label"><i data-lucide="upload"></i>파일 선택<input type="file"
@@ -82,7 +83,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="input-group">
+                            <div class="input-group hidden-area">
                                 <label>QR 코드 업로드 (QR Code) - Max 1</label>
                                 <div class="mini-upload-area">
                                     <label class="mini-file-label"><i data-lucide="upload"></i>파일 선택<input type="file"
@@ -143,6 +144,7 @@
                                 <label>기업소개 / Company Intro (KOR) <span class="limit-hint">(Max: 2,000)</span></label>
                                 <textarea name="intro_kor" rows="8" maxlength="2000"
                                     placeholder="국문 기업 소개를 입력하세요 (공백 포함 2,000자 이내)"></textarea>
+                                <div class="print-mirror" id="mirror-intro_kor"></div>
                                 <div class="char-counter-wrap"><span id="count-intro_kor" class="char-counter">0 /
                                         2,000</span></div>
                             </div>
@@ -150,6 +152,7 @@
                                 <label>기업소개 / Company Intro (ENG) <span class="limit-hint">(Max: 3,000)</span></label>
                                 <textarea name="intro_eng" rows="8" maxlength="3000"
                                     placeholder="Enter company introduction in English (Up to 3,000 chars)"></textarea>
+                                <div class="print-mirror" id="mirror-intro_eng"></div>
                                 <div class="char-counter-wrap"><span id="count-intro_eng" class="char-counter">0 /
                                         3,000</span></div>
                             </div>
@@ -171,6 +174,7 @@
                                 <label>대표제품 / Main Products (KOR) <span class="limit-hint">(Max: 500)</span></label>
                                 <textarea name="products_kor" rows="8" maxlength="500"
                                     placeholder="주요 제품 리스트를 입력하세요 (공백 포함 500자 이내)"></textarea>
+                                <div class="print-mirror" id="mirror-products_kor"></div>
                                 <div class="char-counter-wrap"><span id="count-products_kor" class="char-counter">0 /
                                         500</span></div>
                             </div>
@@ -178,14 +182,15 @@
                                 <label>대표제품 / Main Products (ENG) <span class="limit-hint">(Max: 1,000)</span></label>
                                 <textarea name="products_eng" rows="8" maxlength="1000"
                                     placeholder="Enter main products list in English (Up to 1,000 chars)"></textarea>
+                                <div class="print-mirror" id="mirror-products_eng"></div>
                                 <div class="char-counter-wrap"><span id="count-products_eng" class="char-counter">0 /
                                         1000</span></div>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Section 4: Representative Photo -->
-                    <div class="form-section no-print-input">
+                    <!-- Section 4: Representative Photo (Hidden) -->
+                    <div class="form-section hidden-area">
                         <h4 class="section-title">04. 대표 사진 (Representative Photo)</h4>
                         <div class="photo-upload-area">
                             <div class="upload-controls">
@@ -219,7 +224,7 @@
         <div class="overlay-content">
             <div class="icon-circle">📦</div>
             <h2>저장이 완료되었습니다!</h2>
-            <p style="margin: 1rem 0 1.5rem 0; line-height: 1.6;">PDF 서류와 원본 파일이 포함된<br>ZIP 패키지가 다운로드되었습니다.</p>
+            <p style="margin: 1rem 0 1.5rem 0; line-height: 1.6;">PDF 서류가 성공적으로 생성되었습니다.</p>
             <button class="btn-primary" onclick="location.reload()">새로 작성</button>
         </div>
     </div>
