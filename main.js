@@ -33,13 +33,13 @@ document.addEventListener('DOMContentLoaded', () => {
                     const removeBtn = document.createElement('button');
                     removeBtn.className = 'remove-photo-btn';
                     removeBtn.innerHTML = '&times;';
-                    wrap.appendChild(removeBtn);
                     removeBtn.onclick = (e) => {
                         e.stopPropagation();
                         allSelectedFiles.splice(index, 1);
                         updateInputFiles();
                         renderPreviews();
                     };
+                    wrap.appendChild(removeBtn);
                     previewGrid.appendChild(wrap);
                 };
                 reader.readAsDataURL(file);
@@ -62,26 +62,59 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // 3. Mini Preview Logic (Logo, QR)
+    // 3. Robust Logo Preview Logic (Improved for AI/EPS/PDF + Name + Delete)
     function handleMiniPreview(inputSelector, previewBoxId) {
         const input = document.getElementById(inputSelector);
         const box = document.getElementById(previewBoxId);
         if (!input || !box) return;
+        
         input.addEventListener('change', (e) => {
             const file = e.target.files[0];
-            if (!file || !file.type.startsWith('image/')) return;
-            box.innerHTML = '';
-            const reader = new FileReader();
-            reader.onload = (ev) => {
-                const img = document.createElement('img');
-                img.src = ev.target.result;
-                box.appendChild(img);
-            };
-            reader.readAsDataURL(file);
+            if (!file) return;
+            box.innerHTML = ''; // Clear placeholder
+            const infoBox = document.getElementById(inputSelector.replace('-input', '-file-info'));
+            if (infoBox) infoBox.innerHTML = '';
+            
+            const fileName = file.name;
+            const extension = fileName.split('.').pop().toUpperCase();
+            const isImage = /\.(JPG|JPEG|PNG|GIF|SVG|WEBP)$/i.test(fileName);
+
+            if (isImage) {
+                const reader = new FileReader();
+                reader.onload = (ev) => {
+                    const img = document.createElement('img');
+                    img.src = ev.target.result;
+                    box.appendChild(img);
+                };
+                reader.readAsDataURL(file);
+            } else {
+                const extSpan = document.createElement('span');
+                extSpan.className = 'ext-badge';
+                extSpan.textContent = extension;
+                box.appendChild(extSpan);
+            }
+
+            if (infoBox) {
+                const nameSpan = document.createElement('span');
+                nameSpan.className = 'file-name-text';
+                nameSpan.textContent = fileName;
+                
+                const rmBtn = document.createElement('button');
+                rmBtn.className = 'text-remove-btn';
+                rmBtn.innerHTML = '삭제';
+                rmBtn.onclick = (ev) => {
+                    ev.preventDefault();
+                    input.value = ""; // Clear input
+                    box.innerHTML = '<span class="placeholder-text">Logo</span>';
+                    infoBox.innerHTML = '';
+                };
+                
+                infoBox.appendChild(nameSpan);
+                infoBox.appendChild(rmBtn);
+            }
         });
     }
     handleMiniPreview('logo-input', 'logo-preview-box');
-    handleMiniPreview('qr-input', 'qr-preview-box');
 
     if (window.lucide) lucide.createIcons();
 
@@ -125,25 +158,24 @@ document.addEventListener('DOMContentLoaded', () => {
             const safeName = companyName.replace(/[/\\?%*:|"<>]/g, '-');
 
             try {
-                // A. Generate High-Fidelity HTML Archive
                 const clone = docCard.cloneNode(true);
-                
-                // Clean UI noise for static archive
-                clone.querySelectorAll('.no-print-input, .remove-photo-btn, .file-label, .mini-file-label, .char-counter-wrap, .btn-primary, .btn-secondary').forEach(el => el.remove());
-                
-                // Map Image paths to ZIP folders inside the HTML
-                const logoImg = clone.querySelector('#logo-preview-box img');
-                const qrImg = clone.querySelector('#qr-preview-box img');
-                const photoImgs = clone.querySelectorAll('#photo-preview-box img');
+                const originalInputs = docCard.querySelectorAll('input, textarea');
+                clone.querySelectorAll('input, textarea').forEach((el, i) => {
+                    if (originalInputs[i]) {
+                        if (el.tagName === 'TEXTAREA') el.textContent = originalInputs[i].value;
+                        else el.setAttribute('value', originalInputs[i].value);
+                    }
+                });
 
+                clone.querySelectorAll('.no-print-input, .remove-photo-btn, .file-label, .mini-file-label, .char-counter-wrap, .btn-primary, .btn-secondary, .mini-remove-btn').forEach(el => el.remove());
+                
+                const logoImg = clone.querySelector('#logo-preview-box img');
+                const photoImgs = clone.querySelectorAll('#photo-preview-box img');
                 const logoFile = document.getElementById('logo-input').files[0];
-                const qrFile = document.getElementById('qr-input').files[0];
 
                 if (logoImg && logoFile) logoImg.src = `Branding_Assets/Logo.${logoFile.name.split('.').pop()}`;
-                if (qrImg && qrFile) qrImg.src = `Branding_Assets/QR.${qrFile.name.split('.').pop()}`;
                 photoImgs.forEach((img, i) => { if (allSelectedFiles[i]) img.src = `img/Photo_${i+1}.${allSelectedFiles[i].name.split('.').pop()}`; });
 
-                // Inline all active styles
                 const cssText = Array.from(document.styleSheets)
                     .filter(sheet => !sheet.href || sheet.href.includes(window.location.hostname))
                     .map(sheet => {
@@ -155,7 +187,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 <!DOCTYPE html>
                 <html lang="ko">
                 <head>
-                    <meta charset="UTF-8"><title>${companyName} - Directory</title>
+                    <meta charset="UTF-8"><title>${companyName} - Archive</title>
                     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
                     <style>
                         body { background: #f0f2f5; margin: 0; padding: 40px; font-family: 'Inter', sans-serif; }
@@ -168,7 +200,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 <body><div class="container">${clone.outerHTML}</div></body>
                 </html>`;
 
-                // B. Create ZIP Package
                 const zip = new JSZip();
                 const root = zip.folder(`${safeName}_Package`);
                 root.file(`${safeName}_Archive.html`, archiveHtml);
@@ -179,9 +210,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
                 const brandingFolder = root.folder("Branding_Assets");
                 if (logoFile) brandingFolder.file(`Logo.${logoFile.name.split('.').pop()}`, logoFile);
-                if (qrFile) brandingFolder.file(`QR.${qrFile.name.split('.').pop()}`, qrFile);
 
-                // C. Final Download
                 const content = await zip.generateAsync({ type: "blob" });
                 const link = document.createElement('a');
                 link.href = URL.createObjectURL(content);
@@ -196,7 +225,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 }, 1000);
             } catch (err) {
                 console.error(err);
-                alert('저장 중 오류가 발생했습니다.');
+                alert('에러 발생!');
                 saveSendBtn.disabled = false;
                 if (btnText) btnText.style.display = 'inline';
                 if (btnLoading) btnLoading.style.display = 'none';

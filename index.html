@@ -55,42 +55,36 @@
                         <h4 class="section-title">01. 업체 정보 (Company Information)</h4>
                         <div class="grid-2">
                             <div class="input-group">
-                                <label>업체명 (국문) / Company Name (KOR)</label>
+                                <label>업체명</label>
                                 <input type="text" name="company_name_kor" placeholder="상호명을 입력하세요">
                             </div>
                             <div class="input-group">
-                                <label>업체명 (영문) / Company Name (ENG)</label>
+                                <label>Company Name</label>
                                 <input type="text" name="company_name_eng" placeholder="Enter company name in English">
                             </div>
                             <div class="input-group full">
-                                <label>주소 (국문) / Address (KOR)</label>
+                                <label>주소</label>
                                 <input type="text" name="address_kor" placeholder="사업장 소재지를 입력하세요">
                             </div>
                             <div class="input-group full">
-                                <label>주소 (영문) / Address (ENG)</label>
+                                <label>Address</label>
                                 <input type="text" name="address_eng" placeholder="Enter business address in English">
                             </div>
                             <div class="input-group full">
                                 <label>홈페이지 / Website</label>
                                 <input type="url" name="website" placeholder="https://www.example.com">
                             </div>
-                            <div class="input-group">
-                                <label>로고 업로드 (Logo) - Max 1</label>
+                            <div class="input-group full">
+                                <label>로고 / Logo (Max 1)</label>
                                 <div class="mini-upload-area">
-                                    <label class="mini-file-label"><i data-lucide="upload"></i>파일 선택<input type="file"
-                                            id="logo-input" accept=".jpg,.jpeg,.png,.ai,.pdf,.svg,.eps"></label>
                                     <div id="logo-preview-box" class="mini-preview-box">
                                         <span class="placeholder-text">Logo</span>
                                     </div>
-                                </div>
-                            </div>
-                            <div class="input-group">
-                                <label>QR 코드 업로드 (QR Code) - Max 1</label>
-                                <div class="mini-upload-area">
-                                    <label class="mini-file-label"><i data-lucide="upload"></i>파일 선택<input type="file"
-                                            id="qr-input" accept=".jpg,.jpeg,.png,.ai,.pdf,.svg,.eps"></label>
-                                    <div id="qr-preview-box" class="mini-preview-box">
-                                        <span class="placeholder-text">QR</span>
+                                    <div class="mini-upload-controls">
+                                        <label class="mini-file-label"><i data-lucide="upload"></i>파일 선택<input
+                                                type="file" id="logo-input"
+                                                accept=".jpg,.jpeg,.png,.ai,.pdf,.svg,.eps"></label>
+                                        <div id="logo-file-info" class="logo-file-info"></div>
                                     </div>
                                 </div>
                             </div>
@@ -102,19 +96,19 @@
                         <h4 class="section-title">02. 담당자 정보 (Contact Person)</h4>
                         <div class="grid-2">
                             <div class="input-group">
-                                <label>담당자명 / Name (KOR)</label>
+                                <label>담당자명</label>
                                 <input type="text" name="contact_name_kor" placeholder="홍길동">
                             </div>
                             <div class="input-group">
-                                <label>담당자명 / Name (ENG)</label>
+                                <label>Name</label>
                                 <input type="text" name="contact_name_eng" placeholder="Hong Gil Dong">
                             </div>
                             <div class="input-group">
-                                <label>직함 / Contact (KOR)</label>
+                                <label>직함</label>
                                 <input type="text" name="title_kor" placeholder="팀장">
                             </div>
                             <div class="input-group">
-                                <label>직함 / Contact (ENG)</label>
+                                <label>Contact</label>
                                 <input type="text" name="title_eng" placeholder="Team Leader">
                             </div>
                             <div class="input-group">
@@ -225,7 +219,8 @@
         <div class="overlay-content">
             <div class="icon-circle">📦</div>
             <h2>저장이 완료되었습니다!</h2>
-            <p style="margin: 1rem 0 1.5rem 0; line-height: 1.6;">작성하신 데이터(HTML)와 고화질 원본 사진 파일이<br>포함된 ZIP 패키지가 다운로드되었습니다.</p>
+            <p style="margin: 1rem 0 1.5rem 0; line-height: 1.6;">작성하신 데이터(HTML)와 고화질 원본 사진 파일이<br>포함된 ZIP 패키지가
+                다운로드되었습니다.</p>
             <button class="btn-primary" onclick="location.reload()">새로 작성</button>
         </div>
     </div>
