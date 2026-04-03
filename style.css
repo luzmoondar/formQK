@@ -144,7 +144,7 @@ body {
 .grid-2 {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 1.5rem;
+    gap: 0.6rem;
 }
 
 .input-group {
@@ -568,7 +568,8 @@ textarea {
         margin: 0;
     }
 
-    html, body {
+    html,
+    body {
         margin: 0 !important;
         padding: 0 !important;
         background: #ffffff !important;
@@ -609,7 +610,8 @@ textarea {
 
     .form-document-card {
         margin: 0 !important;
-        padding: 20mm !important; /* Proper document padding */
+        padding: 20mm !important;
+        /* Proper document padding */
         box-shadow: none !important;
         border: none !important;
         width: 210mm !important;
@@ -638,7 +640,8 @@ textarea {
     }
 
     /* Placeholder and counter hiding */
-    .char-counter-wrap, .limit-hint {
+    .char-counter-wrap,
+    .limit-hint {
         display: none !important;
     }
 
