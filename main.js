@@ -164,6 +164,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     if (originalInputs[i]) {
                         if (el.tagName === 'TEXTAREA') el.textContent = originalInputs[i].value;
                         else el.setAttribute('value', originalInputs[i].value);
+                        el.setAttribute('readonly', 'readonly');
                     }
                 });
 
@@ -193,7 +194,8 @@ document.addEventListener('DOMContentLoaded', () => {
                         body { background: #f0f2f5; margin: 0; padding: 40px; font-family: 'Inter', sans-serif; }
                         ${cssText}
                         .form-document-card { margin: 0 auto; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); width: 100%; max-width: 900px; border: 1px solid #e2e8f0; }
-                        input, textarea { border: none !important; background: transparent !important; pointer-events: none; }
+                        input, textarea { border: none !important; background: transparent !important; resize: none; outline: none; }
+                        input:focus, textarea:focus { border: none !important; box-shadow: none !important; background: transparent !important; }
                         .preview-img-wrap { border: none !important; box-shadow: none !important; }
                     </style>
                 </head>
